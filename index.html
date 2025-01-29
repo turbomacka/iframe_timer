@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matrix Countdown Timer</title>
+
+  <!-- Google Font for Matrix Effect -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Roboto Mono', monospace;
+      color: #00ff00;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Text ovanför timern */
+    #countdown-header {
+      position: relative;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+      z-index: 2;
+      margin-bottom: 20px;
+    }
+
+    /* Timern i mitten */
+    #countdown {
+      position: relative;
+      font-size: 4rem;
+      font-weight: bold;
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px 30px;
+      border-radius: 8px;
+      letter-spacing: 5px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .countdown-digit {
+      display: inline-block;
+      min-width: 50px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Fallande siffror */
+    .falling-digit {
+      position: absolute;
+      font-size: 3rem;
+      font-weight: bold;
+      color: #00ffcc;
+      text-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffcc, 0 0 35px #00ffcc;
+      opacity: 1;
+      transition: transform 3s linear, opacity 1s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Matrix Code Rain Effect -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Text ovanför timern -->
+  <div id="countdown-header">Nedräkning till kursstart</div>
+
+  <!-- Timern i mitten -->
+  <div id="countdown">
+    <span class="countdown-digit" data-index="0">0</span>
+    <span class="countdown-digit" data-index="1">0</span>
+    <span class="countdown-digit" data-index="2">0</span>
+    <span class="countdown-digit" data-index="3">0</span>
+    <span class="countdown-digit" data-index="4">0</span>
+    <span class="countdown-digit" data-index="5">0</span>
+    <span class="countdown-digit" data-index="6">0</span>
+    <span class="countdown-digit" data-index="7">0</span>
+  </div>
+
+  <script>
+    /*** 🎥 MATRIX CODE RAIN EFFECT ***/
+    (function() {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      const matrixChars = 'アカサタナハマヤラガザダバパイキシチニヒミリグズヅブプエェケセテネヘメレゲゼデベペオコソトノホモヨロゴゾドボポヴン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const fontSize = 20;
+      const columns = Math.floor(width / fontSize);
+      const drops = Array(columns).fill(1);
+
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = '#00ff00';
+        ctx.font = `${fontSize}px 'Roboto Mono', monospace`;
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+
+          drops[i]++;
+        }
+      }
+
+      setInterval(drawMatrix, 33);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        drops.length = Math.floor(width / fontSize);
+        drops.fill(1);
+      });
+
+    })();
+
+    /*** ⏳ COUNTDOWN TIMER ***/
+    (function() {
+      function updateCountdown(targetDate) {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+          return;
+        }
+
+        const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+        const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+        const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+        const newCountdown = days + hours + minutes + seconds;
+
+        document.querySelectorAll('.countdown-digit').forEach((digitElement, index) => {
+          const currentDigit = digitElement.textContent;
+          const newDigit = newCountdown[index];
+
+          if (currentDigit !== newDigit) {
+            // Skapa fallande siffra i kodregnet
+            const fallingDigit = document.createElement('span');
+            fallingDigit.textContent = newDigit;
+            fallingDigit.classList.add('falling-digit');
+            fallingDigit.style.position = 'absolute';
+            fallingDigit.style.left = `${Math.random() * window.innerWidth}px`;
+            fallingDigit.style.top = `${Math.random() * window.innerHeight / 2}px`; // Börjar i kodregnet
+
+            // Lägg till i dokumentet
+            document.body.appendChild(fallingDigit);
+
+            // Animera in siffran i timern
+            setTimeout(() => {
+              const rect = digitElement.getBoundingClientRect();
+              fallingDigit.style.transform = `translate(${rect.left - fallingDigit.getBoundingClientRect().left}px, ${rect.top - fallingDigit.getBoundingClientRect().top}px) scale(1.5)`;
+            }, 50);
+
+            // Ersätt siffran i timern och ta bort den animerade siffran
+            setTimeout(() => {
+              digitElement.textContent = newDigit;
+              fallingDigit.remove();
+            }, 3000);
+          }
+        });
+
+        setTimeout(() => updateCountdown(targetDate), 1000);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const courseStartDate = new Date(2025, 1, 12, 13, 0, 0).getTime();
+        updateCountdown(courseStartDate);
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
