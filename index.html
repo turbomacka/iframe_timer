@@ -14,7 +14,8 @@
       overflow: hidden;
       background: black;
       font-family: 'Roboto Mono', monospace;
-      color: #00ff00;
+      /* Huvudtexten – använder LTU:s Kunglig blå */
+      color: #0C4E95;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -36,8 +37,8 @@
       position: relative;
       font-size: 2rem;
       font-weight: bold;
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+      color: #0C4E95; /* Kunglig blå */
+      text-shadow: 0 0 10px #0C4E95, 0 0 20px #0C4E95;
       z-index: 2;
       margin-bottom: 20px;
     }
@@ -47,8 +48,8 @@
       position: relative;
       font-size: 4rem;
       font-weight: bold;
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
+      color: #0C4E95; /* Kunglig blå */
+      text-shadow: 0 0 10px #0C4E95, 0 0 20px #0C4E95;
       z-index: 2;
       background: rgba(0, 0, 0, 0.6);
       padding: 20px 30px;
@@ -65,13 +66,13 @@
       position: relative;
     }
 
-    /* Fallande siffror */
+    /* Fallande siffror – använder LTU:s Ljusblå */
     .falling-digit {
       position: absolute;
       font-size: 3rem;
       font-weight: bold;
-      color: #00ffcc;
-      text-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffcc, 0 0 35px #00ffcc;
+      color: #1587E7;
+      text-shadow: 0 0 15px #1587E7, 0 0 25px #1587E7, 0 0 35px #1587E7;
       opacity: 1;
       transition: transform 3s linear, opacity 1s ease-out;
     }
@@ -114,7 +115,8 @@
       function drawMatrix() {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
         ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = '#00ff00';
+        // Använder LTU:s Mellanblå för matrix-effekten
+        ctx.fillStyle = '#17416F';
         ctx.font = `${fontSize}px 'Roboto Mono', monospace`;
 
         for (let i = 0; i < drops.length; i++) {
@@ -168,12 +170,12 @@
             fallingDigit.classList.add('falling-digit');
             fallingDigit.style.position = 'absolute';
             fallingDigit.style.left = `${Math.random() * window.innerWidth}px`;
-            fallingDigit.style.top = `${Math.random() * window.innerHeight / 2}px`; // Börjar i kodregnet
+            fallingDigit.style.top = `${Math.random() * window.innerHeight / 2}px`; // Startar i kodregnet
 
             // Lägg till i dokumentet
             document.body.appendChild(fallingDigit);
 
-            // Animera in siffran i timern
+            // Animera siffran in i timern
             setTimeout(() => {
               const rect = digitElement.getBoundingClientRect();
               fallingDigit.style.transform = `translate(${rect.left - fallingDigit.getBoundingClientRect().left}px, ${rect.top - fallingDigit.getBoundingClientRect().top}px) scale(1.5)`;
@@ -191,6 +193,7 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
+        // Exempel: Kursstart den 12 februari 2025, kl. 13:00
         const courseStartDate = new Date(2025, 1, 12, 13, 0, 0).getTime();
         updateCountdown(courseStartDate);
       });
